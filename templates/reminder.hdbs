@@ -1,0 +1,12 @@
+<div class="content">
+  <h4>Please remember to select the following field(s) when you try to solve a ticket</h4>
+  <br />
+  <ul>
+    {{#each customFieldList}}
+    <li>
+      <p class="CFlabel">{{.}}</p>
+    </li>
+    {{/each}}
+  </ul>
+  <br />
+</div>

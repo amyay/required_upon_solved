@@ -1,0 +1,22 @@
+{
+  "name": "Required fields upon solved",
+  "author": {
+    "name": "amy",
+    "email": "amy@zendesk.com",
+    "url": "http://www.zendesk.com"
+  },
+  "defaultLocale": "en",
+  "private": true,
+  "location": ["ticket_sidebar", "new_ticket_sidebar"],
+  "version": "1.0",
+  "frameworkVersion": "1.0",
+  "parameters": [
+    {
+      "label": "custom field IDs to be required upon solve",
+      "name": "CFID",
+      "type": "text",
+      "helpText": "e.g. 12345, 67890",
+      "required": false
+    }
+  ]
+}
