@@ -12,8 +12,8 @@
   "frameworkVersion": "1.0",
   "parameters": [
     {
-      "label": "custom field IDs to be required upon solve",
-      "name": "CFID",
+      "label": "CFID",
+      "name": "Custom field IDs to be required upon solving tickets",
       "type": "text",
       "helpText": "e.g. 12345, 67890",
       "required": false
