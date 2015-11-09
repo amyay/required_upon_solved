@@ -1,23 +1,36 @@
 (function() {
 
   var CustomFieldIDs = [];
+  var CFPresentListID = [];
+  var CFPresentListLabel = [];
 
   return {
     events: {
-      'app.activated'                                  : 'init',
-      'ticket.form.id.changed'                         : 'init',
+      //'app.activated'                                  : 'init',
+      'app.created'                                    : 'init',
+      //'ticket.form.id.changed'                         : 'init',
+      'ticket.form.id.changed'                         : 'reinit',
       'ticket.save'                                    : 'checkFields',
-      '*.changed'                                      : 'init'
+      //'*.changed'                                      : 'init'
+      '*.changed'                                      : 'reinit'
       // 'ticket.custom_field_28638228.changed': 'init2'
       // 'ticket.custom_field_25639528.changed': 'customField25639528Changed'
     },
 
     init: function() {
       console.log ('hello world, i am in init()');
-      this.CFPresentList = [];
+      CFPresentListID = [];
+      CFPresentListLabel = [];
       CustomFieldIDs = this.setting('CFID').replace(/\s/g, '').split(',');
       console.log ('CustomFieldIDs:', CustomFieldIDs);
       this.showReminder();
+    },
+
+    reinit: function() {
+      console.log ('reinit()');
+      CFPresentListID = [];
+      CFPresentListLabel = [];
+      _.defer(this.showReminder.bind(this));
     },
 
 //     checkFields: function() {
@@ -83,14 +96,20 @@
         // check to see if ticket field is present or not
         if (this.customFieldPresent(CustomFieldIDs[i])) {
           // ticket field is present
-          // now build a list of labels
-          this.CFPresentList.push(this.ticketFields("custom_field_"+CustomFieldIDs[i]).label());
+          // now build a list of labels if it isn't already in it
+          if (CFPresentListID.indexOf(CustomFieldIDs[i]) < 0) {
+            CFPresentListID.push(CustomFieldIDs[i]);
+            CFPresentListLabel.push(this.ticketFields("custom_field_"+CustomFieldIDs[i]).label());
+          }
         }
+        console.log ("in showReminder(), CFPresentListLabel = ", CFPresentListLabel);
+        console.log ("in showReminder(), CFPresentListID = ", CFPresentListID);
+
+        // display
+        this.switchTo ('reminder', {
+          customFieldList: CFPresentListLabel
+        });
       }
-      console.log ("in showReminder(), CFPresentList = ", this.CFPresentList);
-      this.switchTo ('reminder', {
-        customFieldList: this.CFPresentList
-      });
     },
 
 
@@ -99,10 +118,10 @@
     customFieldPresent: function (field_id) {
       // first check to see if the ticket field is defined / present or not
       if (this.ticketFields("custom_field_"+field_id) !== undefined) {
-        console.log("in customFieldPresent(): custom_field"+field_id+"is defined");
+        console.log("in customFieldPresent(): custom_field"+field_id+" is defined");
         // next check to see if custom field is visible or not (CFA hides fields)
         if (this.ticketFields("custom_field_"+field_id).isVisible()) {
-          console.log("in customFieldPresent(): custom_field_"+field_id+"is visible");
+          console.log("in customFieldPresent(): custom_field_"+field_id+" is visible");
           return true;
         }
         else{
