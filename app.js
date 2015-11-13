@@ -30,6 +30,7 @@
 
     // check to see if required fields are filled in
     checkFields: function() {
+      var requiredFieldsNotReady = true;
       // check all fields in CustomFieldIDs
       for (var i = 0; i < CustomFieldIDs.length; i++) {
         // first check to see if ticket field is present or not
@@ -42,12 +43,16 @@
             if ((this.ticket().customField("custom_field_"+CustomFieldIDs[i]) == null) || (this.ticket().customField("custom_field_"+CustomFieldIDs[i]) === '')) {
               // value not selected, do something
               // console.log ('oopsie daisy!');
-              services.notify('Failed to update ticket', 'error');
               services.notify("Custom field \""+this.ticketFields("custom_field_"+CustomFieldIDs[i]).label()+"\" ("+CustomFieldIDs[i]+") is required to be selected upon solved.\nPlease try again", 'error');
-              return false;
+              requiredFieldsNotReady = false;
+              // return false;
             }
           }
       }
+      if (!requiredFieldsNotReady) {
+        services.notify('Failed to update ticket!', 'error');
+      }
+      return requiredFieldsNotReady;
     },
 
     // display required fields on "reminder" template
